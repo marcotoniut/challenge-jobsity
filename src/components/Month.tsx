@@ -1,12 +1,12 @@
-import React, { FC, useState } from "react";
+import { css } from "emotion";
 import * as A from "fp-ts/lib/Array";
 import { pipe } from "fp-ts/lib/pipeable";
-import { getWeeks } from '../helpers/functions/getWeeks'
-import { Week } from "./Week";
+import React, { FC, useState } from "react";
+import { Subject } from "rxjs";
+import { getWeeks } from "../helpers/functions/getWeeks";
 import { Header } from "./Header";
 import { Props as ReminderProps, Reminder } from "./ReminderDetails";
-import { css } from 'emotion';
-import { Subject } from 'rxjs';
+import { Week } from "./Week";
 
 interface Position {
   x: number;
@@ -39,20 +39,22 @@ export const Month: FC<Props> = (props) => {
   const [displayReminder$] = useState(() => new Subject<boolean>());
 
   displayReminder$.subscribe({
-    next: (b) => setDisplayReminder(b)
+    next: (b) => setDisplayReminder(b),
   });
 
   let id = 0;
   const defaultReminder: ReminderProps = {
     id: id++,
-    color: 'white',
+    color: "white",
     day: props.date,
-    message: '',
-    time: '00:00',
-    city: '',
-  }
+    message: "",
+    time: "00:00",
+    city: "",
+  };
 
-  const [currentReminder, setCurrentReminder] = useState<ReminderProps>(defaultReminder);
+  const [currentReminder, setCurrentReminder] = useState<ReminderProps>(
+    defaultReminder
+  );
   const [reminderPosition, setReminderPosition] = useState<Position>({
     x: 0,
     y: 0,
@@ -85,7 +87,7 @@ export const Month: FC<Props> = (props) => {
   return (
     <div className={styles.component}>
       <Header title={monthNames[props.date.getMonth()]} />
-      <ul className= {styles.daysArea}>
+      <ul className={styles.daysArea}>
         {pipe(
           weeks,
           A.map((week) => (
@@ -93,7 +95,7 @@ export const Month: FC<Props> = (props) => {
               start={week.start}
               end={week.end}
               month={new Date(props.date.getFullYear(), props.date.getMonth())}
-              displayReminder$= {displayReminder$}
+              displayReminder$={displayReminder$}
             />
           ))
         )}
